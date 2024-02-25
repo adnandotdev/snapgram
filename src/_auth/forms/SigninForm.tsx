@@ -1,7 +1,6 @@
 import Loaderimg from '../../components/shared/loaderimg.js'
 import { Link, useNavigate } from 'react-router-dom';
 import { useState } from 'react';
-import { signInAccount } from '@/lib/appwrite/api.js';
 import { account } from '@/lib/appwrite/config.js';
 
 
@@ -10,22 +9,19 @@ function SigninForm() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const isLoading = false;
-  // const navigate = useNavigate()
+  const navigate = useNavigate()
   async function onSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
-    const session = await signInAccount({email,password})
-    return session
     
-    
-    // try {
-    //   const response = await account.createEmailSession(email, password);
-    //   if (response.$id) {
-    //     navigate('/signup');
-    //     console.log(response);
-    //   }
-    // } catch (err) {
-    //   console.error(err);
-    // }
+    try {
+      const response = await account.createEmailSession(email, password);
+      if (response.$id) {
+        navigate('/signup');
+        console.log(response);
+      }
+    } catch (err) {
+      console.error(err);
+    }
   }
 
 

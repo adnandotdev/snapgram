@@ -1,27 +1,58 @@
-import { createUserAccount, signInAccount } from '@/lib/appwrite/api.js';
+import { createUserAccount } from '@/lib/appwrite/api.js';
 import Loaderimg from '../../components/shared/loaderimg.js'
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { useState } from 'react';
+import { useUserContext } from '@/context/AuthContext.js';
+import { account } from '@/lib/appwrite/config.js';
 
 
 
-function SignupForm() {
+export default function SignupForm() {
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [username, setUserName] = useState('');
   const [password, setPassword] = useState('');
   const isLoading = false;
+  
+  const { checkAuthUser , isLoading: isUserLoading } = useUserContext()
+  const navigate = useNavigate()
+  
+
   const onSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     const formData = { name, username, email, password };
     e.preventDefault();
-    const newUser = createUserAccount(formData);
+    
+    const newUser = await createUserAccount(formData);
     
     if(!newUser){
-      return Error; // add the error dilog box in return
+      return new Error("Failed to create a new user account."); // add the error dilog box in return
     }
     
-    const session = await signInAccount({email,password})
-    return session
+    try {
+      const response = await account.createEmailSession(email, password);
+      if (response.$id) {
+        navigate('/');
+        console.log(response.$id);
+        
+      }
+    } catch (err) {
+      console.log(err);
+    }
+    
+    const isLoggedIn = await checkAuthUser()
+
+    if(isLoggedIn){
+      setName('');  
+      setUserName('');
+      setEmail('');
+      setPassword('');
+
+      navigate('/signin')
+    } else {
+      console.log(Error)
+    }
+    
+
   }
   return (
 
@@ -80,5 +111,3 @@ function SignupForm() {
 
   )
 }
-
-export default SignupForm
