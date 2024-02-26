@@ -1,7 +1,6 @@
 import { INewUser } from "@/types";
 import { ID, Query } from "appwrite";
 import { account, appwriteConfig, avatars, databases } from "./config";
-import { useNavigate } from "react-router-dom";
 
 export async function createUserAccount(user: INewUser){
     try{

@@ -2,28 +2,49 @@ import Loaderimg from '../../components/shared/loaderimg.js'
 import { Link, useNavigate } from 'react-router-dom';
 import { useState } from 'react';
 import { account } from '@/lib/appwrite/config.js';
+import { useUserContext } from '@/context/AuthContext.js';
 
 
-function SigninForm() {
+export default function SigninForm() {
   
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const isLoading = false;
+  const [isLoading, setIsLoading] = useState(false)
+  
+  const { checkAuthUser } = useUserContext()
   const navigate = useNavigate()
+
+  
   async function onSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
+    setIsLoading(true)
     
     try {
       const response = await account.createEmailSession(email, password);
       if (response.$id) {
-        navigate('/signup');
+        navigate('/');
         console.log(response);
+
+
+        const isLoggedIn = await checkAuthUser()
+    
+        if(isLoggedIn){
+          setEmail('');
+          setPassword('');
+    
+          // navigate('/')
+        } else {
+          console.log(Error)
+        }
+
       }
     } catch (err) {
-      console.error(err);
+      throw new Error("Login failed. Please try again.");
+    } finally {
+      setIsLoading(false)
     }
+    
   }
-
 
   return (
     <div className="flex flex-col items-center justify-center h-screen dark m-10">
@@ -80,5 +101,3 @@ function SigninForm() {
     </div>
   );
 }
-
-export default SigninForm

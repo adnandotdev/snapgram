@@ -12,16 +12,16 @@ export default function SignupForm() {
   const [email, setEmail] = useState('');
   const [username, setUserName] = useState('');
   const [password, setPassword] = useState('');
-  const isLoading = false;
+  const [isLoading, setIsLoading] = useState(false)
   
-  const { checkAuthUser , isLoading: isUserLoading } = useUserContext()
+  const { checkAuthUser } = useUserContext()
   const navigate = useNavigate()
   
 
   const onSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     const formData = { name, username, email, password };
     e.preventDefault();
-    
+    setIsLoading(true)  
     const newUser = await createUserAccount(formData);
     
     if(!newUser){
@@ -34,23 +34,26 @@ export default function SignupForm() {
         navigate('/');
         console.log(response.$id);
         
+        const isLoggedIn = await checkAuthUser()
+        
+        if(isLoggedIn){
+          setName('');  
+          setUserName('');
+          setEmail('');
+          setPassword('');
+    
+          // navigate('/')
+        } else {
+          console.log(Error)
+        }
+
       }
     } catch (err) {
       console.log(err);
+    } finally {
+      setIsLoading(false)
     }
     
-    const isLoggedIn = await checkAuthUser()
-
-    if(isLoggedIn){
-      setName('');  
-      setUserName('');
-      setEmail('');
-      setPassword('');
-
-      navigate('/signin')
-    } else {
-      console.log(Error)
-    }
     
 
   }
