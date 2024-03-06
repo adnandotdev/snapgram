@@ -68,9 +68,9 @@ const AuthProvider = ({ children }: { children : React.ReactNode }) => {
         if (
             cookieFallback === "[]" ||
             cookieFallback === null ||
-            cookieFallback === undefined
+            cookieFallback === undefined 
         ) {
-            navigate('/signin')
+            navigate('/signin')  
         }
 
         checkAuthUser()

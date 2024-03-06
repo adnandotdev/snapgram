@@ -1,6 +1,6 @@
 import { Outlet,Navigate } from 'react-router-dom'
 
-function AuthLayout() {
+export default function AuthLayout() {
   const isAuthenticated = false
   return (
     <>
@@ -23,4 +23,3 @@ function AuthLayout() {
   )
 }
 
-export default AuthLayout
