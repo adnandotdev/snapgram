@@ -1,14 +1,27 @@
-
 import React from 'react'
-import { Link, NavLink, useNavigate } from 'react-router-dom'
+import { Link, NavLink, useLocation, useNavigate } from 'react-router-dom'
 import { useUserContext } from '@/context/AuthContext'
 import { sidebarLinks } from '@/constants'
 import { INavLink } from '@/types'
+import { account } from '@/lib/appwrite/config'
 
 
 const LeftSideBar = () => {
   const navigate = useNavigate()
+  const { pathname } = useLocation()
   const { user } = useUserContext()
+
+  const signOut = async (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
+    e.preventDefault()
+        try {
+            const session = await account.deleteSession('current')
+            console.log(session)
+            navigate('signin')  
+        } catch (error) {
+            console.log(error)
+    }
+}
+
   return (
     <nav className='hidden md:flex flex-col justify-between px-6 py-6 min-w-[270px] bg-gray-900'>
       <div className='flex flex-col gap-11'>
@@ -41,23 +54,30 @@ const LeftSideBar = () => {
 
         <ul className='flec flex-col gap-6'>
           {sidebarLinks.map((link: INavLink) => {
+            const isActive = pathname === link.route
             return (
-              <li className='rounded-lg hover:bg-gray-600'> 
-              <NavLink
-                to={link.route}
-                className='flex gap-4 items-center p-4 text-white'
-              >
-                <img
-                  src={link.imgURL}
-                  alt={link.label}
-                />
-                {link.label}
-              </NavLink>
+              <li key ={link.label} className={`transition rounded-lg hover:bg-gray-600 ${isActive && 'bg-gray-600'}`}>
+                <NavLink
+                  to={link.route}
+                  className='flex gap-4 items-center p-4 text-white'
+                >
+                  <img
+                    src={link.imgURL}
+                    alt={link.label}
+                  />
+                  {link.label}
+                </NavLink>
               </li>
             )
           })}
         </ul>
       </div>
+      <button
+        onClick={(e) => signOut(e)}
+        className='flex gap-4 items-center p-4 text-white hover:bg-gray-600 rounded-lg'>
+          <img src="/icons/logout.svg" alt="Logout" />
+          <p>Logout</p>
+      </button>
     </nav>
   )
 }

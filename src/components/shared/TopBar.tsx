@@ -20,7 +20,7 @@ const TopBar = () => {
   return (
     <section className="sticky top-0 z-50 md:hidden bg-gray-900 w-full">
         <div className="flex justify-between py-1 px-5">
-            <Link to="/" className="flex py-2">
+            <Link to="/" className="flex py-1">
                 <img 
                 src="/images/instagram.png"
                 alt ="logo"
