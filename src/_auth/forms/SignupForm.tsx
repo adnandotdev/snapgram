@@ -7,7 +7,7 @@ import { account } from '@/lib/appwrite/config.js';
 
 
 
-export default function SignupForm() {
+export default function SignupForm() {  
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [username, setUserName] = useState('');
